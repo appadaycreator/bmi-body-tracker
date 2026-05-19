@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI・体型管理トラッカー｜標準体重・目標体重を無料計算＆記録</title>
+    <meta name="description" content="BMIを無料で計算し、標準体重・目標体重・体脂肪率の目安を表示。体重の毎日記録と推移グラフ、BMI別のダイエット・健康アドバイスも。スマホに保存されるので登録不要。">
+    <meta name="keywords" content="BMI,計算,標準体重,目標体重,体型管理,体重記録,ダイエット,肥満,体脂肪率,無料">
+    <link rel="canonical" href="https://appadaycreator.github.io/bmi-body-tracker/">
+    <meta property="og:title" content="BMI・体型管理トラッカー｜標準体重・目標体重を無料計算＆記録">
+    <meta property="og:description" content="BMIを無料で計算し、標準体重・目標体重・体脂肪率の目安を表示。体重記録と推移グラフ付き。登録不要。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://appadaycreator.github.io/bmi-body-tracker/">
+    <meta property="og:image" content="https://appadaycreator.github.io/assets/ogp-default.png">
+    <meta property="og:site_name" content="BMI・体型管理トラッカー">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="BMI・体型管理トラッカー｜標準体重・目標体重を無料計算">
+    <meta name="twitter:description" content="BMI計算・体重記録・推移グラフ・ダイエットアドバイスを無料で。登録不要。">
+    <meta name="twitter:image" content="https://appadaycreator.github.io/assets/ogp-default.png">
+    <!-- GTM -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TXQGZRF9');</script>
+    <!-- Clarity -->
+    <script>(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","s3t9vl8h3v");</script>
+    <!-- AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8427583028015858" crossorigin="anonymous"></script>
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"WebApplication","name":"BMI・体型管理トラッカー","url":"https://appadaycreator.github.io/bmi-body-tracker/","description":"BMIを無料で計算し、標準体重・目標体重・体重推移グラフを管理できるWebアプリ。","applicationCategory":"HealthApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"}}
+    </script>
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+      {"@type":"Question","name":"BMIの計算方法は？","acceptedAnswer":{"@type":"Answer","text":"BMI = 体重(kg) ÷ 身長(m)²で計算します。例：体重60kg・身長170cmの場合、60÷(1.70×1.70)≒20.8となります。日本では18.5未満が低体重、18.5〜24.9が普通体重、25以上が肥満とされています。"}},
+      {"@type":"Question","name":"標準体重の計算方法は？","acceptedAnswer":{"@type":"Answer","text":"標準体重 = 身長(m)² × 22で計算します。例：身長170cmの標準体重は1.70×1.70×22=63.6kgとなります。BMI22が最も病気になりにくい体重とされています。"}},
+      {"@type":"Question","name":"BMIが25以上だと何がリスクになりますか？","acceptedAnswer":{"@type":"Answer","text":"BMI25以上（肥満）では、糖尿病・高血圧・脂質異常症・睡眠時無呼吸症候群・関節疾患などのリスクが高まります。BMI22の標準体重を目標に、食事と運動で体重管理をすることが重要です。"}},
+      {"@type":"Question","name":"短期間でBMIを下げるには？","acceptedAnswer":{"@type":"Answer","text":"1ヶ月に体重の5%以上の急激な減量は筋肉量も落とすためリスクがあります。1ヶ月0.5〜1kg（週0.1〜0.2kg）の緩やかな減量が安全で効果的です。1日200〜300kcalの摂取制限と30分のウォーキングを組み合わせましょう。"}}
+    ]}
+    </script>
+    <style>
+        *{box-sizing:border-box;margin:0;padding:0;}
+        body{font-family:'Hiragino Sans','Meiryo',sans-serif;background:#fff7f0;color:#1e293b;line-height:1.6;}
+        .header{background:linear-gradient(135deg,#7c2d12 0%,#ea580c 60%,#fb923c 100%);color:#fff;padding:20px 16px 0;text-align:center;}
+        .header h1{font-size:clamp(1.1rem,4vw,1.5rem);font-weight:800;margin-bottom:6px;}
+        .header p{font-size:0.82rem;opacity:0.9;margin-bottom:16px;}
+        .tabs{display:flex;background:rgba(0,0,0,0.2);border-radius:12px 12px 0 0;max-width:520px;margin:0 auto;}
+        .tab{flex:1;padding:11px 4px;font-size:0.78em;font-weight:700;color:rgba(255,255,255,0.75);cursor:pointer;border:none;background:none;transition:all .2s;}
+        .tab.active{background:#fff;color:#ea580c;border-radius:8px 8px 0 0;}
+        .main{max-width:520px;margin:0 auto;padding:0 12px 60px;}
+        .panel{display:none;padding-top:14px;}
+        .panel.active{display:block;}
+        .card{background:#fff;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.07);padding:18px;margin-bottom:14px;}
+        .card-title{font-size:0.9rem;font-weight:700;color:#ea580c;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+        label{display:block;font-size:0.8rem;font-weight:600;color:#475569;margin-bottom:4px;margin-top:12px;}
+        input[type=number],select{width:100%;padding:10px 12px;border:1px solid #fed7aa;border-radius:9px;font-size:0.88em;background:#fff7f0;color:#1e293b;outline:none;}
+        input[type=number]:focus,select:focus{border-color:#ea580c;background:#fff;}
+        input[type=range]{width:100%;accent-color:#ea580c;cursor:pointer;}
+        .val-display{font-size:1.4rem;font-weight:800;color:#ea580c;text-align:center;margin:4px 0;}
+        .btn-primary{width:100%;background:linear-gradient(135deg,#ea580c,#f97316);color:#fff;border:none;border-radius:10px;padding:13px;font-size:0.95rem;font-weight:700;cursor:pointer;margin-top:12px;}
+        .btn-primary:hover{opacity:0.92;}
+        /* BMIメーター */
+        .bmi-meter{margin:14px 0;}
+        .bmi-bar{height:16px;border-radius:8px;background:linear-gradient(90deg,#3b82f6 0%,#22c55e 30%,#eab308 55%,#ef4444 75%,#7c3aed 100%);position:relative;margin-bottom:6px;}
+        .bmi-pointer{position:absolute;top:-4px;width:4px;height:24px;background:#1e293b;border-radius:2px;transform:translateX(-50%);transition:left .5s;}
+        .bmi-labels{display:flex;justify-content:space-between;font-size:0.65em;color:#64748b;}
+        /* 結果 */
+        .result-hero{border-radius:12px;padding:20px;text-align:center;margin-bottom:14px;color:#fff;}
+        .result-hero .bmi-val{font-size:3rem;font-weight:800;margin:4px 0;}
+        .result-hero .bmi-label{font-size:1rem;font-weight:700;margin-bottom:4px;}
+        .result-hero .sub{font-size:0.82em;opacity:0.9;}
+        .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+        .result-box{border-radius:10px;padding:12px;text-align:center;}
+        .result-box .val{font-size:1.25rem;font-weight:800;}
+        .result-box .lbl{font-size:0.72em;color:#64748b;margin-top:2px;}
+        .result-box.orange{background:#fff7ed;border:1px solid #fed7aa;} .result-box.orange .val{color:#ea580c;}
+        .result-box.green{background:#f0fdf4;border:1px solid #86efac;} .result-box.green .val{color:#16a34a;}
+        .result-box.blue{background:#eff6ff;border:1px solid #bfdbfe;} .result-box.blue .val{color:#1d4ed8;}
+        .result-box.red{background:#fff1f2;border:1px solid #fca5a5;} .result-box.red .val{color:#dc2626;}
+        /* グラフ */
+        .chart-wrap{overflow-x:auto;padding-bottom:8px;}
+        .weight-chart{display:flex;align-items:flex-end;gap:4px;height:120px;padding:0 2px;}
+        .w-col{flex:1;min-width:22px;display:flex;flex-direction:column;align-items:center;}
+        .w-bar{width:100%;border-radius:4px 4px 0 0;background:linear-gradient(180deg,#ea580c,#f97316);cursor:pointer;}
+        .w-lbl{font-size:0.58em;color:#94a3b8;margin-top:3px;text-align:center;}
+        /* 記録リスト */
+        .record-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #fef3c7;font-size:0.83em;}
+        .record-item:last-child{border:none;}
+        .record-diff.up{color:#dc2626;}
+        .record-diff.down{color:#16a34a;}
+        /* アドバイス */
+        .advice-item{padding:10px 0;border-bottom:1px solid #fef3c7;font-size:0.83em;color:#475569;display:flex;gap:8px;}
+        .advice-item:last-child{border:none;}
+        /* 関連リンク */
+        .related-link{display:block;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:12px;text-decoration:none;color:#ea580c;font-size:0.85em;font-weight:600;margin-bottom:8px;}
+        .amz-btn{display:inline-block;background:#ff9900;color:#fff;padding:9px 18px;border-radius:8px;font-size:0.83em;font-weight:700;text-decoration:none;margin:4px;}
+        /* 性別ボタン */
+        .gender-btn{flex:1;padding:10px;border:2px solid #fed7aa;border-radius:8px;font-size:0.88em;font-weight:700;cursor:pointer;background:#fff;color:#64748b;transition:all .15s;}
+        .gender-btn.selected{border-color:#ea580c;background:#fff7ed;color:#ea580c;}
+    </style>
+</head>
+<body>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TXQGZRF9" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+<div class="header">
+    <h1>⚖️ BMI・体型管理<br>トラッカー</h1>
+    <p>BMI計算・標準体重・体重記録・推移グラフを無料で一括管理</p>
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('calc',this)">📊 BMI計算</button>
+        <button class="tab" onclick="switchTab('record',this)">📝 体重記録</button>
+        <button class="tab" onclick="switchTab('advice',this)">💡 アドバイス</button>
+        <button class="tab" onclick="switchTab('goods',this)">🛒 グッズ</button>
+    </div>
+</div>
+
+<div class="main">
+
+<!-- ===== BMI計算タブ ===== -->
+<div id="panel-calc" class="panel active">
+    <div class="card">
+        <div class="card-title">📏 あなたの情報を入力</div>
+        <label>性別</label>
+        <div style="display:flex;gap:8px;margin-top:4px;">
+            <button class="gender-btn selected" id="btn-male" onclick="selectGender('male',this)">👨 男性</button>
+            <button class="gender-btn" id="btn-female" onclick="selectGender('female',this)">👩 女性</button>
+        </div>
+        <label>身長 (cm)</label>
+        <input type="range" id="height" min="140" max="200" step="1" value="170" oninput="updateCalc()">
+        <div class="val-display" id="height-disp">170 cm</div>
+        <label>現在の体重 (kg)</label>
+        <input type="range" id="weight" min="35" max="150" step="0.5" value="65" oninput="updateCalc()">
+        <div class="val-display" id="weight-disp">65.0 kg</div>
+        <label>年齢</label>
+        <select id="age" onchange="updateCalc()">
+            <option value="teens">10代</option>
+            <option value="20s" selected>20〜30代</option>
+            <option value="40s">40〜50代</option>
+            <option value="60s">60代以上</option>
+        </select>
+    </div>
+
+    <!-- 結果 -->
+    <div id="calc-result"></div>
+
+    <!-- 目標体重計算 -->
+    <div class="card" id="goal-card">
+        <div class="card-title">🎯 目標体重シミュレーション</div>
+        <label>目標BMI</label>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button class="goal-btn" onclick="setGoalBmi(22,this)" style="flex:1;min-width:70px;padding:8px 4px;border:2px solid #fed7aa;border-radius:8px;font-size:0.78em;font-weight:700;cursor:pointer;background:#fff;color:#64748b;">BMI22<br><span style="font-size:0.75em;font-weight:400;">標準体重</span></button>
+            <button class="goal-btn active" onclick="setGoalBmi(21,this)" style="flex:1;min-width:70px;padding:8px 4px;border:2px solid #ea580c;border-radius:8px;font-size:0.78em;font-weight:700;cursor:pointer;background:#fff7ed;color:#ea580c;">BMI21<br><span style="font-size:0.75em;font-weight:400;">理想体重</span></button>
+            <button class="goal-btn" onclick="setGoalBmi(20,this)" style="flex:1;min-width:70px;padding:8px 4px;border:2px solid #fed7aa;border-radius:8px;font-size:0.78em;font-weight:700;cursor:pointer;background:#fff;color:#64748b;">BMI20<br><span style="font-size:0.75em;font-weight:400;">スリム</span></button>
+            <button class="goal-btn" onclick="setGoalBmi(18.5,this)" style="flex:1;min-width:70px;padding:8px 4px;border:2px solid #fed7aa;border-radius:8px;font-size:0.78em;font-weight:700;cursor:pointer;background:#fff;color:#64748b;">BMI18.5<br><span style="font-size:0.75em;font-weight:400;">低体重境界</span></button>
+        </div>
+        <div id="goal-result" style="margin-top:12px;"></div>
+    </div>
+</div>
+
+<!-- ===== 体重記録タブ ===== -->
+<div id="panel-record" class="panel">
+    <div class="card">
+        <div class="card-title">📝 今日の体重を記録</div>
+        <label>📅 日付</label>
+        <input type="date" id="rec-date" required>
+        <label>⚖️ 体重 (kg)</label>
+        <input type="number" id="rec-weight" placeholder="例: 65.5" min="30" max="200" step="0.1" required>
+        <label>📝 メモ（任意）</label>
+        <input type="number" id="rec-memo-dummy" style="display:none">
+        <input type="text" id="rec-memo" placeholder="例: 朝食前・ランニング後" maxlength="30" style="width:100%;padding:10px 12px;border:1px solid #fed7aa;border-radius:9px;font-size:0.88em;background:#fff7f0;color:#1e293b;outline:none;">
+        <button class="btn-primary" onclick="saveRecord()">💾 記録する</button>
+    </div>
+
+    <div class="card">
+        <div class="card-title">📈 体重推移グラフ（直近30件）</div>
+        <div class="chart-wrap"><div class="weight-chart" id="weight-chart"></div></div>
+        <div id="chart-legend" style="display:flex;justify-content:space-between;font-size:0.72em;color:#94a3b8;margin-top:4px;"></div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">📋 記録一覧</div>
+        <div id="record-list"></div>
+        <div id="record-empty" style="text-align:center;color:#94a3b8;padding:20px;font-size:0.85em;">まだ記録がありません。上から体重を入力してください。</div>
+        <button onclick="clearAllRecords()" style="width:100%;background:#fee2e2;color:#dc2626;border:none;border-radius:8px;padding:10px;font-size:0.82em;cursor:pointer;margin-top:12px;font-weight:600;">🗑️ 全記録を削除</button>
+    </div>
+</div>
+
+<!-- ===== アドバイスタブ ===== -->
+<div id="panel-advice" class="panel">
+    <div id="advice-content"></div>
+    <div class="card">
+        <div class="card-title">🔗 関連ツール</div>
+        <a href="https://appadaycreator.github.io/calorie-calculator/" class="related-link">🍽️ カロリー計算機 → 1日の摂取カロリーを計算</a>
+        <a href="https://appadaycreator.github.io/muscle-rotation-manager/" class="related-link">💪 筋トレ部位ローテーション → 効率的なトレーニング計画</a>
+        <a href="https://appadaycreator.github.io/fire-calculator/" class="related-link">🔥 FIRE計算機 → 健康と資産を同時に管理</a>
+    </div>
+</div>
+
+<!-- ===== グッズタブ ===== -->
+<div id="panel-goods" class="panel">
+    <div class="card" style="text-align:center;">
+        <div class="card-title" style="justify-content:center;">📱 スマート体重計</div>
+        <a href="https://www.amazon.co.jp/s?k=体重計+スマート+体脂肪+Bluetooth&tag=appadaycrea0f-22" target="_blank" rel="noopener noreferrer" class="js-track-affiliate amz-btn" data-platform="Amazon" data-item-name="スマート体重計" data-link-type="affiliate_link" style="display:block;margin:8px 0;">📱 スマホ連携 スマート体重計</a>
+        <a href="https://www.amazon.co.jp/s?k=体脂肪計+体重計+オムロン&tag=appadaycrea0f-22" target="_blank" rel="noopener noreferrer" class="js-track-affiliate amz-btn" data-platform="Amazon" data-item-name="体脂肪計付き体重計" data-link-type="affiliate_link" style="display:block;margin:8px 0;">⚖️ 体脂肪計付き体重計</a>
+    </div>
+    <div class="card" style="text-align:center;">
+        <div class="card-title" style="justify-content:center;">🥗 ダイエット・健康グッズ</div>
+        <a href="https://www.amazon.co.jp/s?k=プロテイン+ダイエット+女性&tag=appadaycrea0f-22" target="_blank" rel="noopener noreferrer" class="js-track-affiliate amz-btn" data-platform="Amazon" data-item-name="プロテイン" data-link-type="affiliate_link">🥛 プロテイン</a>
+        <a href="https://www.amazon.co.jp/s?k=ダイエット+サプリ+脂肪燃焼&tag=appadaycrea0f-22" target="_blank" rel="noopener noreferrer" class="js-track-affiliate amz-btn" data-platform="Amazon" data-item-name="ダイエットサプリ" data-link-type="affiliate_link">💊 脂肪燃焼サプリ</a>
+        <a href="https://www.amazon.co.jp/s?k=フィットネスバンド+万歩計+スマート&tag=appadaycrea0f-22" target="_blank" rel="noopener noreferrer" class="js-track-affiliate amz-btn" data-platform="Amazon" data-item-name="スマートバンド" data-link-type="affiliate_link">⌚ スマートバンド</a>
+    </div>
+    <div class="card" style="text-align:center;">
+        <div class="card-title" style="justify-content:center;">📚 ダイエット・健康の参考書</div>
+        <a href="https://www.amazon.co.jp/s?k=ダイエット+科学的+本+2024&tag=appadaycrea0f-22" target="_blank" rel="noopener noreferrer" class="js-track-affiliate amz-btn" data-platform="Amazon" data-item-name="ダイエット本" data-link-type="affiliate_link">📗 科学的ダイエット入門</a>
+        <a href="https://www.amazon.co.jp/s?k=糖質制限+レシピ+本&tag=appadaycrea0f-22" target="_blank" rel="noopener noreferrer" class="js-track-affiliate amz-btn" data-platform="Amazon" data-item-name="糖質制限レシピ本" data-link-type="affiliate_link">🍱 糖質制限レシピ</a>
+        <a href="https://www.amazon.co.jp/s?k=筋トレ+ボディメイク+本&tag=appadaycrea0f-22" target="_blank" rel="noopener noreferrer" class="js-track-affiliate amz-btn" data-platform="Amazon" data-item-name="筋トレ本" data-link-type="affiliate_link">💪 筋トレ・ボディメイク</a>
+    </div>
+    <div class="card">
+        <div class="card-title">❓ よくある質問</div>
+        <details style="margin-bottom:10px;"><summary style="cursor:pointer;font-size:0.88em;font-weight:600;padding:4px 0;">1ヶ月で何kg痩せるのが理想ですか？</summary><p style="font-size:0.8em;color:#475569;padding:8px 0 0 12px;">1ヶ月に現体重の5%以内（0.5〜1kg程度）が安全な減量ペースです。急激な減量は筋肉量低下・リバウンドの原因になります。</p></details>
+        <details style="margin-bottom:10px;"><summary style="cursor:pointer;font-size:0.88em;font-weight:600;padding:4px 0;">BMIが低すぎると何か問題がありますか？</summary><p style="font-size:0.8em;color:#475569;padding:8px 0 0 12px;">BMI18.5未満は低体重とされ、栄養不足・骨密度低下・免疫力低下などのリスクがあります。特に女性は18未満になると月経不順になることもあります。</p></details>
+        <details><summary style="cursor:pointer;font-size:0.88em;font-weight:600;padding:4px 0;">毎日同じ時間に体重を測るべきですか？</summary><p style="font-size:0.8em;color:#475569;padding:8px 0 0 12px;">はい。朝起きてトイレ後・食前が最も正確です。体重は1日1〜2kg変動するため、同じ条件で測ることが重要です。</p></details>
+    </div>
+</div>
+
+</div>
+
+<script>
+const STORE_KEY = 'bmi_records_v1';
+const PROFILE_KEY = 'bmi_profile_v1';
+let gender = 'male';
+let goalBmi = 21;
+
+const BMI_RANGES = [
+    { max: 18.5, label: '低体重', color: '#3b82f6', bg: 'linear-gradient(135deg,#1d4ed8,#3b82f6)' },
+    { max: 25,   label: '普通体重', color: '#16a34a', bg: 'linear-gradient(135deg,#14532d,#16a34a)' },
+    { max: 30,   label: '肥満（1度）', color: '#d97706', bg: 'linear-gradient(135deg,#92400e,#d97706)' },
+    { max: 35,   label: '肥満（2度）', color: '#dc2626', bg: 'linear-gradient(135deg,#991b1b,#dc2626)' },
+    { max: 40,   label: '肥満（3度）', color: '#9333ea', bg: 'linear-gradient(135deg,#6b21a8,#9333ea)' },
+    { max: 999,  label: '肥満（4度）', color: '#7c3aed', bg: 'linear-gradient(135deg,#4c1d95,#7c3aed)' },
+];
+
+function getBmiRange(bmi) {
+    return BMI_RANGES.find(r => bmi < r.max) || BMI_RANGES[BMI_RANGES.length-1];
+}
+
+// 体脂肪率推定（Deurenberg式の簡易版）
+function estimateBodyFat(bmi, age, isMale) {
+    const ageNum = { teens: 17, '20s': 28, '40s': 48, '60s': 68 }[age] || 28;
+    const sex = isMale ? 1 : 0;
+    return (1.20 * bmi) + (0.23 * ageNum) - (10.8 * sex) - 5.4;
+}
+
+function selectGender(g, el) {
+    gender = g;
+    document.querySelectorAll('.gender-btn').forEach(b => { b.classList.remove('selected'); });
+    el.classList.add('selected');
+    updateCalc();
+}
+
+function setGoalBmi(bmi, el) {
+    goalBmi = bmi;
+    document.querySelectorAll('.goal-btn').forEach(b => {
+        b.style.borderColor='#fed7aa'; b.style.background='#fff'; b.style.color='#64748b';
+    });
+    el.style.borderColor='#ea580c'; el.style.background='#fff7ed'; el.style.color='#ea580c';
+    updateCalc();
+}
+
+function updateCalc() {
+    const h = parseInt(document.getElementById('height').value);
+    const w = parseFloat(document.getElementById('weight').value);
+    const age = document.getElementById('age').value;
+    const hm = h / 100;
+
+    document.getElementById('height-disp').textContent = h + ' cm';
+    document.getElementById('weight-disp').textContent = w.toFixed(1) + ' kg';
+
+    const bmi = w / (hm * hm);
+    const range = getBmiRange(bmi);
+    const stdWeight = Math.round(hm * hm * 22 * 10) / 10;
+    const idealWeight = Math.round(hm * hm * 21 * 10) / 10;
+    const bodyFat = Math.round(estimateBodyFat(bmi, age, gender === 'male') * 10) / 10;
+    const diff = Math.round((w - stdWeight) * 10) / 10;
+
+    // BMIポインター位置（BMI10〜45の範囲でマッピング）
+    const pct = Math.max(0, Math.min(100, (bmi - 10) / 35 * 100));
+
+    document.getElementById('calc-result').innerHTML = `
+        <div class="result-hero" style="background:${range.bg};">
+            <div style="font-size:0.82em;opacity:0.9;">あなたのBMI</div>
+            <div class="bmi-val">${bmi.toFixed(1)}</div>
+            <div class="bmi-label">${range.label}</div>
+            <div class="sub">${h}cm・${w}kg</div>
+        </div>
+        <div class="card" style="margin-bottom:14px;">
+            <p style="font-size:0.75em;color:#64748b;margin-bottom:6px;">BMIゾーン</p>
+            <div class="bmi-meter">
+                <div class="bmi-bar"><div class="bmi-pointer" style="left:${pct}%;"></div></div>
+                <div class="bmi-labels"><span>低体重<br>〜18.5</span><span>普通<br>25未満</span><span>肥満1<br>〜30</span><span>肥満2<br>〜35</span><span>肥満3+</span></div>
+            </div>
+        </div>
+        <div class="result-grid">
+            <div class="result-box green"><div class="val">${stdWeight}kg</div><div class="lbl">標準体重（BMI22）</div></div>
+            <div class="result-box orange"><div class="val">${diff >= 0 ? '+' : ''}${diff}kg</div><div class="lbl">標準体重との差</div></div>
+            <div class="result-box blue"><div class="val">${idealWeight}kg</div><div class="lbl">理想体重（BMI21）</div></div>
+            <div class="result-box ${bodyFat > (gender==='male' ? 25 : 35) ? 'red' : 'green'}"><div class="val">${bodyFat}%</div><div class="lbl">体脂肪率（推定）</div></div>
+        </div>`;
+
+    // 目標体重
+    const goalWeight = Math.round(hm * hm * goalBmi * 10) / 10;
+    const goalDiff = Math.round((w - goalWeight) * 10) / 10;
+    const weeksNeeded = goalDiff > 0 ? Math.ceil(goalDiff / 0.15) : 0;
+    document.getElementById('goal-result').innerHTML = goalDiff > 0
+        ? `<div style="background:#fff7ed;border-radius:8px;padding:12px;font-size:0.83em;">
+            <div style="font-weight:700;color:#ea580c;margin-bottom:6px;">目標: BMI${goalBmi} → ${goalWeight}kg（あと ${goalDiff}kg減）</div>
+            <div style="color:#475569;">週0.15kg減ペースで <strong style="color:#ea580c;">約${weeksNeeded}週間（${Math.ceil(weeksNeeded/4)}ヶ月）</strong> で達成見込み</div>
+           </div>`
+        : `<div style="background:#f0fdf4;border-radius:8px;padding:12px;font-size:0.83em;color:#16a34a;font-weight:700;">
+            ✅ 目標BMI${goalBmi}（${goalWeight}kg）を既に達成しています！
+           </div>`;
+
+    // プロフィール保存
+    try { localStorage.setItem(PROFILE_KEY, JSON.stringify({ h, w, gender, age })); } catch(e) {}
+
+    // アドバイス更新
+    renderAdvice(bmi, range, gender, age);
+}
+
+// ===== 体重記録 =====
+function getRecords() {
+    try { return JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); } catch(e) { return []; }
+}
+function saveRecordData(records) {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(records)); } catch(e) {}
+}
+
+function saveRecord() {
+    const date = document.getElementById('rec-date').value;
+    const weight = parseFloat(document.getElementById('rec-weight').value);
+    const memo = document.getElementById('rec-memo').value.trim();
+
+    if (!date) { alert('日付を入力してください'); return; }
+    if (!weight || weight < 30 || weight > 200) { alert('体重を正しく入力してください（30〜200kg）'); return; }
+
+    const records = getRecords();
+    const existing = records.findIndex(r => r.date === date);
+    if (existing >= 0) {
+        if (!confirm('この日付の記録を上書きしますか？')) return;
+        records[existing] = { date, weight, memo };
+    } else {
+        records.push({ date, weight, memo });
+    }
+    records.sort((a, b) => a.date.localeCompare(b.date));
+    saveRecordData(records);
+    document.getElementById('rec-weight').value = '';
+    document.getElementById('rec-memo').value = '';
+    renderRecords();
+    alert(`✅ 記録しました：${date} ${weight}kg`);
+}
+
+function renderRecords() {
+    const records = getRecords();
+    const list = document.getElementById('record-list');
+    const empty = document.getElementById('record-empty');
+    const chart = document.getElementById('weight-chart');
+    const legend = document.getElementById('chart-legend');
+
+    if (records.length === 0) {
+        list.innerHTML = ''; empty.style.display = 'block'; chart.innerHTML = ''; return;
+    }
+    empty.style.display = 'none';
+
+    // グラフ
+    const recent = records.slice(-30);
+    const minW = Math.min(...recent.map(r => r.weight)) - 1;
+    const maxW = Math.max(...recent.map(r => r.weight)) + 1;
+    const range = Math.max(maxW - minW, 2);
+    chart.innerHTML = recent.map(r => {
+        const h = Math.round(((r.weight - minW) / range) * 110) + 10;
+        return `<div class="w-col">
+            <div class="w-bar" style="height:${h}px;" title="${r.date}: ${r.weight}kg"></div>
+            <div class="w-lbl">${r.date.slice(5)}</div>
+        </div>`;
+    }).join('');
+    if (recent.length >= 2) {
+        const first = recent[0], last = recent[recent.length-1];
+        const diff = (last.weight - first.weight).toFixed(1);
+        legend.innerHTML = `<span>${first.date}:${first.weight}kg</span><span style="color:${parseFloat(diff)<0?'#16a34a':'#dc2626'};font-weight:700;">${parseFloat(diff)>=0?'+':''}${diff}kg</span><span>${last.date}:${last.weight}kg</span>`;
+    }
+
+    // リスト（新しい順）
+    const sorted = [...records].reverse();
+    list.innerHTML = sorted.map((r, i) => {
+        const next = sorted[i+1];
+        const diff = next ? (r.weight - next.weight).toFixed(1) : null;
+        const diffClass = diff ? (parseFloat(diff) < 0 ? 'down' : 'up') : '';
+        const diffStr = diff ? `<span class="record-diff ${diffClass}">${parseFloat(diff)>=0?'+':''}${diff}kg</span>` : '';
+        return `<div class="record-item">
+            <div><span style="font-weight:600;">${r.date}</span> ${r.memo ? `<span style="color:#94a3b8;font-size:0.85em;">${r.memo}</span>` : ''}</div>
+            <div style="text-align:right;"><span style="font-weight:700;font-size:1.05em;">${r.weight}kg</span> ${diffStr}</div>
+        </div>`;
+    }).join('');
+}
+
+function clearAllRecords() {
+    if (!confirm('全記録を削除しますか？この操作は取り消せません。')) return;
+    localStorage.removeItem(STORE_KEY);
+    renderRecords();
+}
+
+// ===== アドバイス =====
+function renderAdvice(bmi, range, gender, age) {
+    const el = document.getElementById('advice-content');
+    if (!el) return;
+
+    const adviceMap = {
+        low: {
+            title: '⚠️ 低体重：栄養をしっかり摂りましょう',
+            color: '#1d4ed8',
+            bg: '#eff6ff',
+            border: '#bfdbfe',
+            items: [
+                '3食しっかり食べ、1日の摂取カロリーを増やしましょう',
+                'タンパク質（肉・魚・卵・豆腐）を毎食意識して摂取',
+                '筋トレで筋肉量を増やしながら健康的な体重増加を目指す',
+                '急激な体重増加は避け、月0.5〜1kg増を目安に',
+                '貧血・骨密度低下に注意。定期的に健康診断を受けましょう',
+            ]
+        },
+        normal: {
+            title: '✅ 普通体重：現状維持が目標',
+            color: '#16a34a',
+            bg: '#f0fdf4',
+            border: '#86efac',
+            items: [
+                '現在の体重・生活習慣を維持することが最優先',
+                '体重は1日1〜2kg変動するため、週1回の測定で十分',
+                '定期的な有酸素運動（週150分）で代謝を維持',
+                '暴飲暴食・睡眠不足は体重増加の原因。生活リズムを整えましょう',
+                'BMI22の標準体重が最も病気リスクが低いとされています',
+            ]
+        },
+        obese: {
+            title: '📉 肥満：無理なく減量を目指しましょう',
+            color: '#ea580c',
+            bg: '#fff7ed',
+            border: '#fed7aa',
+            items: [
+                '1日の摂取カロリーを200〜300kcal減らすことから始める',
+                '主食（ご飯・パン）を少し減らし、野菜・タンパク質を増やす',
+                '毎日30分のウォーキングが最も継続しやすい運動',
+                '急激な断食・激しいダイエットはリバウンドの原因',
+                '月0.5〜1kgの緩やかな減量が長続きする',
+            ]
+        }
+    };
+
+    const type = bmi < 18.5 ? 'low' : bmi < 25 ? 'normal' : 'obese';
+    const a = adviceMap[type];
+
+    el.innerHTML = `
+        <div class="card" style="border:1px solid ${a.border};background:${a.bg};">
+            <div class="card-title" style="color:${a.color};">${a.title}</div>
+            ${a.items.map(item => `<div class="advice-item"><span>✓</span><div>${item}</div></div>`).join('')}
+        </div>
+        <div class="card">
+            <div class="card-title">🏃 1日の消費カロリー目安</div>
+            <div style="font-size:0.82em;color:#475569;">
+                <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #fef3c7;"><span>座り仕事中心</span><span style="font-weight:700;">${Math.round(parseInt(document.getElementById('weight')?.value||65)*25)}〜${Math.round(parseInt(document.getElementById('weight')?.value||65)*28)} kcal</span></div>
+                <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #fef3c7;"><span>適度に動く</span><span style="font-weight:700;">${Math.round(parseInt(document.getElementById('weight')?.value||65)*28)}〜${Math.round(parseInt(document.getElementById('weight')?.value||65)*32)} kcal</span></div>
+                <div style="display:flex;justify-content:space-between;padding:5px 0;"><span>よく動く・運動習慣あり</span><span style="font-weight:700;">${Math.round(parseInt(document.getElementById('weight')?.value||65)*32)}〜${Math.round(parseInt(document.getElementById('weight')?.value||65)*37)} kcal</span></div>
+            </div>
+        </div>`;
+}
+
+// ===== タブ切替 =====
+function switchTab(name, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-'+name).classList.add('active');
+    if (name === 'record') renderRecords();
+}
+
+// アフィリエイトトラッキング
+document.addEventListener('click', function(e){
+    const el = e.target.closest('.js-track-affiliate');
+    if (!el) return;
+    if (typeof dataLayer !== 'undefined') dataLayer.push({event:'affiliate_click',affiliate_item:el.dataset.itemName,affiliate_platform:el.dataset.platform});
+});
+
+window.onerror = function(msg,src,line){try{console.error('[AppError]',msg,'at',src+':'+line);}catch(e){}return false;};
+window.addEventListener('unhandledrejection',function(e){console.error('[PromiseError]',e.reason);});
+
+document.addEventListener('DOMContentLoaded', function(){
+    // 今日の日付をデフォルト設定
+    document.getElementById('rec-date').value = new Date().toISOString().slice(0,10);
+    // プロフィール復元
+    try {
+        const prof = JSON.parse(localStorage.getItem(PROFILE_KEY) || '{}');
+        if (prof.h) document.getElementById('height').value = prof.h;
+        if (prof.w) document.getElementById('weight').value = prof.w;
+        if (prof.gender) { gender = prof.gender; document.getElementById('btn-'+prof.gender)?.classList.add('selected'); document.getElementById('btn-'+(prof.gender==='male'?'female':'male'))?.classList.remove('selected'); }
+        if (prof.age) document.getElementById('age').value = prof.age;
+    } catch(e) {}
+    updateCalc();
+    var l = document.getElementById('page-loader');
+    if(l){l.style.opacity='0';l.style.transition='opacity 0.3s';setTimeout(function(){l.remove();},350);}
+});
+</script>
+
+<div id="page-loader" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#fff7f0;z-index:9999;display:flex;align-items:center;justify-content:center;">
+    <div style="width:40px;height:40px;border:4px solid #fed7aa;border-top-color:#ea580c;border-radius:50%;animation:spin-loader 0.8s linear infinite;"></div>
+</div>
+<style>@keyframes spin-loader{to{transform:rotate(360deg)}}</style>
+</body>
+</html>
