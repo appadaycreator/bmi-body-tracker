@@ -89,7 +89,15 @@
         /* 性別ボタン */
         .gender-btn{flex:1;padding:10px;border:2px solid #fed7aa;border-radius:8px;font-size:0.88em;font-weight:700;cursor:pointer;background:#fff;color:#64748b;transition:all .15s;}
         .gender-btn.selected{border-color:#ea580c;background:#fff7ed;color:#ea580c;}
-    </style>
+    
+/* Phase 8: Mobile Optimization */
+input, select, textarea { font-size: 16px !important; }
+button, .btn, .btn-primary, .option-btn, [role="button"] { min-height: 48px; min-width: 48px; touch-action: manipulation; }
+@media (max-width: 640px) {
+  body { font-size: 16px; }
+  .max-w-lg { padding-left: 1rem; padding-right: 1rem; }
+}
+</style>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
