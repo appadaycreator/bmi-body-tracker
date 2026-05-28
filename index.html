@@ -586,8 +586,6 @@ document.addEventListener('DOMContentLoaded', function(){
   <select name="bm_s" required><option value="a">A</option><option value="b">B</option></select>
 </div>
 <script>
-window.onerror=function(m,s,l){try{console.error("[bm]",m,s,l);}catch(e){}return false;};
-window.addEventListener("unhandledrejection",function(e){try{console.warn("[bm] unhandled",e.reason);}catch(e){}});
 window.bmSafeGet=function(k,d){try{var v=localStorage.getItem(k);return v!==null?JSON.parse(v):d;}catch(e){return d;}};
 window.bmSafeSet=function(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}};
 window.bmSafeRm=function(k){try{localStorage.removeItem(k);return true;}catch(e){return false;}};
