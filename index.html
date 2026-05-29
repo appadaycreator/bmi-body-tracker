@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({"gtm.start":
+new Date().getTime(),event:"gtm.js"});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
+"https://www.googletagmanager.com/gtm.js?id="+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,"script","dataLayer","GTM-TXQGZRF9");</script>
+<!-- End Google Tag Manager -->
     <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://www.clarity.ms">
@@ -27,8 +34,6 @@
     <meta name="twitter:title" content="BMI・体型管理トラッカー｜標準体重・目標体重を無料計算">
     <meta name="twitter:description" content="BMI計算・体重記録・推移グラフ・ダイエットアドバイスを無料で。登録不要。">
     <meta name="twitter:image" content="https://appadaycreator.com/bmi-body-tracker/ogp.png">
-    <!-- GTM -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TXQGZRF9');</script>
     <!-- Clarity -->
     <script>(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","s3t9vl8h3v");</script>
     <!-- AdSense -->
@@ -191,10 +196,16 @@ button, .btn, .btn-primary, .option-btn, [role="button"] { min-height: 48px; min
             <button class="gender-btn" id="btn-female" onclick="selectGender('female',this)">👩 女性</button>
         </div>
         <label>身長 (cm)</label>
-        <input type="range" id="height" min="140" max="200" step="1" value="170" oninput="updateCalc()">
+        <div style="display:flex;align-items:center;gap:8px;">
+            <input type="range" id="height" min="140" max="200" step="1" value="170" oninput="syncHeight(this.value)" style="flex:1;">
+            <input type="number" id="height-num" min="140" max="200" step="1" value="170" oninput="syncHeight(this.value)" style="width:72px;padding:6px 8px;border:1px solid #fed7aa;border-radius:8px;font-size:0.88em;background:#fff7f0;text-align:center;">
+        </div>
         <div class="val-display" id="height-disp">170 cm</div>
         <label>現在の体重 (kg)</label>
-        <input type="range" id="weight" min="35" max="150" step="0.5" value="65" oninput="updateCalc()">
+        <div style="display:flex;align-items:center;gap:8px;">
+            <input type="range" id="weight" min="35" max="150" step="0.5" value="65" oninput="syncWeight(this.value)" style="flex:1;">
+            <input type="number" id="weight-num" min="35" max="150" step="0.1" value="65" oninput="syncWeight(this.value)" style="width:72px;padding:6px 8px;border:1px solid #fed7aa;border-radius:8px;font-size:0.88em;background:#fff7f0;text-align:center;">
+        </div>
         <div class="val-display" id="weight-disp">65.0 kg</div>
         <label>年齢</label>
         <select id="age" onchange="updateCalc()">
@@ -246,7 +257,10 @@ button, .btn, .btn-primary, .option-btn, [role="button"] { min-height: 48px; min
         <div class="card-title">📋 記録一覧</div>
         <div id="record-list"></div>
         <div id="record-empty" style="text-align:center;color:#94a3b8;padding:20px;font-size:0.85em;">まだ記録がありません。上から体重を入力してください。</div>
-        <button onclick="clearAllRecords()" style="width:100%;background:#fee2e2;color:#dc2626;border:none;border-radius:8px;padding:10px;font-size:0.82em;cursor:pointer;margin-top:12px;font-weight:600;">🗑️ 全記録を削除</button>
+        <div style="display:flex;gap:8px;margin-top:12px;">
+            <button onclick="exportCSV()" style="flex:1;background:#e0f2fe;color:#0369a1;border:none;border-radius:8px;padding:10px;font-size:0.82em;cursor:pointer;font-weight:600;">📥 CSVダウンロード</button>
+            <button onclick="clearAllRecords()" style="flex:1;background:#fee2e2;color:#dc2626;border:none;border-radius:8px;padding:10px;font-size:0.82em;cursor:pointer;font-weight:600;">🗑️ 全記録を削除</button>
+        </div>
     </div>
 </div>
 
@@ -314,6 +328,19 @@ function estimateBodyFat(bmi, age, isMale) {
     const ageNum = { teens: 17, '20s': 28, '40s': 48, '60s': 68 }[age] || 28;
     const sex = isMale ? 1 : 0;
     return (1.20 * bmi) + (0.23 * ageNum) - (10.8 * sex) - 5.4;
+}
+
+function syncHeight(val) {
+    const v = Math.max(140, Math.min(200, parseInt(val) || 170));
+    document.getElementById('height').value = v;
+    document.getElementById('height-num').value = v;
+    updateCalc();
+}
+function syncWeight(val) {
+    const v = Math.max(35, Math.min(150, parseFloat(val) || 65));
+    document.getElementById('weight').value = v;
+    document.getElementById('weight-num').value = v;
+    updateCalc();
 }
 
 function selectGender(g, el) {
@@ -405,8 +432,8 @@ function saveRecord() {
     const weight = parseFloat(document.getElementById('rec-weight').value);
     const memo = document.getElementById('rec-memo').value.trim();
 
-    if (!date) { alert('日付を入力してください'); return; }
-    if (!weight || weight < 30 || weight > 200) { alert('体重を正しく入力してください（30〜200kg）'); return; }
+    if (!date) { showError('日付を入力してください'); return; }
+    if (!weight || weight < 30 || weight > 200) { showError('体重を正しく入力してください（30〜200kg）'); return; }
 
     const records = getRecords();
     const existing = records.findIndex(r => r.date === date);
@@ -421,7 +448,7 @@ function saveRecord() {
     document.getElementById('rec-weight').value = '';
     document.getElementById('rec-memo').value = '';
     renderRecords();
-    alert(`✅ 記録しました：${date} ${weight}kg`);
+    showSuccess(`✅ 記録しました：${date} ${weight}kg`);
 }
 
 function renderRecords() {
@@ -454,6 +481,11 @@ function renderRecords() {
         legend.innerHTML = `<span>${first.date}:${first.weight}kg</span><span style="color:${parseFloat(diff)<0?'#16a34a':'#dc2626'};font-weight:700;">${parseFloat(diff)>=0?'+':''}${diff}kg</span><span>${last.date}:${last.weight}kg</span>`;
     }
 
+    // 身長を保存済みプロフィールから取得してBMI計算
+    let savedH = 170;
+    try { const p = JSON.parse(localStorage.getItem(PROFILE_KEY) || '{}'); if (p.h) savedH = p.h; } catch(e) {}
+    const hm = savedH / 100;
+
     // リスト（新しい順）
     const sorted = [...records].reverse();
     list.innerHTML = sorted.map((r, i) => {
@@ -461,9 +493,15 @@ function renderRecords() {
         const diff = next ? (r.weight - next.weight).toFixed(1) : null;
         const diffClass = diff ? (parseFloat(diff) < 0 ? 'down' : 'up') : '';
         const diffStr = diff ? `<span class="record-diff ${diffClass}">${parseFloat(diff)>=0?'+':''}${diff}kg</span>` : '';
+        const bmiVal = (r.weight / (hm * hm)).toFixed(1);
+        const bmiRange = getBmiRange(parseFloat(bmiVal));
+        const bmiColor = bmiRange.color;
         return `<div class="record-item">
             <div><span style="font-weight:600;">${r.date}</span> ${r.memo ? `<span style="color:#94a3b8;font-size:0.85em;">${r.memo}</span>` : ''}</div>
-            <div style="text-align:right;"><span style="font-weight:700;font-size:1.05em;">${r.weight}kg</span> ${diffStr}</div>
+            <div style="text-align:right;display:flex;align-items:center;gap:6px;">
+                <span style="font-size:0.72em;font-weight:700;color:${bmiColor};background:${bmiColor}20;padding:2px 5px;border-radius:4px;">BMI ${bmiVal}</span>
+                <span style="font-weight:700;font-size:1.05em;">${r.weight}kg</span>${diffStr}
+            </div>
         </div>`;
     }).join('');
 }
@@ -472,6 +510,25 @@ function clearAllRecords() {
     if (!confirm('全記録を削除しますか？この操作は取り消せません。')) return;
     localStorage.removeItem(STORE_KEY);
     renderRecords();
+    showInfo('全記録を削除しました');
+}
+
+function exportCSV() {
+    const records = getRecords();
+    if (records.length === 0) { showError('エクスポートするデータがありません'); return; }
+    // BOM付きCSV（Excelで文字化けしない）
+    let csv = '﻿日付,体重(kg),メモ\n';
+    records.forEach(r => {
+        csv += `${r.date},${r.weight},"${(r.memo || '').replace(/"/g, '""')}"\n`;
+    });
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `体重記録_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showSuccess(`${records.length}件の記録をダウンロードしました`);
 }
 
 // ===== アドバイス =====
@@ -564,8 +621,8 @@ document.addEventListener('DOMContentLoaded', function(){
     // プロフィール復元
     try {
         const prof = JSON.parse(localStorage.getItem(PROFILE_KEY) || '{}');
-        if (prof.h) document.getElementById('height').value = prof.h;
-        if (prof.w) document.getElementById('weight').value = prof.w;
+        if (prof.h) { document.getElementById('height').value = prof.h; document.getElementById('height-num').value = prof.h; }
+        if (prof.w) { document.getElementById('weight').value = prof.w; document.getElementById('weight-num').value = prof.w; }
         if (prof.gender) { gender = prof.gender; document.getElementById('btn-'+prof.gender)?.classList.add('selected'); document.getElementById('btn-'+(prof.gender==='male'?'female':'male'))?.classList.remove('selected'); }
         if (prof.age) document.getElementById('age').value = prof.age;
     } catch(e) {}
