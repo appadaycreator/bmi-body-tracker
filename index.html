@@ -617,7 +617,7 @@ window.addEventListener('unhandledrejection',function(e){console.error('[Promise
 
 document.addEventListener('DOMContentLoaded', function(){
     // 今日の日付をデフォルト設定
-    document.getElementById('rec-date').value = new Date().toISOString().slice(0,10);
+    const _n=new Date(); document.getElementById('rec-date').value = `${_n.getFullYear()}-${String(_n.getMonth()+1).padStart(2,'0')}-${String(_n.getDate()).padStart(2,'0')}`;
     // プロフィール復元
     try {
         const prof = JSON.parse(localStorage.getItem(PROFILE_KEY) || '{}');
