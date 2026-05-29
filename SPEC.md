@@ -72,3 +72,9 @@ GitHub Pages（mainブランチ push → 自動デプロイ）
 
 MIT License
 - 2026-05-29: PWA theme-color ブランドカラー統一 (#6366F1→#7c3aed) [improve_auto 横展開]
+- 2026-05-29: v1.1.0 UX改善実装 [improve_auto]
+  - GTMスクリプト重複削除（パフォーマンス改善）
+  - 身長・体重スライダーに数値直接入力フィールド追加（モバイルUX向上）
+  - alert/confirm → showToast/showSuccess/showError 統合（モバイルUX改善）
+  - CSVエクスポート機能追加（データバックアップ対応）
+  - 体重記録一覧にBMI値表示（BMI推移の可視化）
