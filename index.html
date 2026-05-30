@@ -242,15 +242,27 @@ button, .btn, .btn-primary, .option-btn, [role="button"] { min-height: 48px; min
         <input type="date" id="rec-date" required>
         <label>⚖️ 体重 (kg)</label>
         <input type="number" id="rec-weight" placeholder="例: 65.5" min="30" max="200" step="0.1" required aria-label="例: 65.5">
+        <label>🎯 目標体重 (kg)（任意）</label>
+        <input type="number" id="rec-goal" placeholder="例: 60.0" min="30" max="200" step="0.1" style="width:100%;padding:10px 12px;border:1px solid #fed7aa;border-radius:9px;font-size:0.88em;background:#fff7f0;color:#1e293b;outline:none;" aria-label="目標体重（任意）">
         <label>📝 メモ（任意）</label>
         <input type="number" id="rec-memo-dummy" style="display:none">
         <input type="text" id="rec-memo" placeholder="例: 朝食前・ランニング後" maxlength="30" style="width:100%;padding:10px 12px;border:1px solid #fed7aa;border-radius:9px;font-size:0.88em;background:#fff7f0;color:#1e293b;outline:none;" aria-label="例: 朝食前・ランニング後">
         <button class="btn-primary" onclick="saveRecord()" aria-label="💾 記録する">💾 記録する</button>
     </div>
 
+    <!-- 統計サマリー（JS で動的生成） -->
+    <div id="stats-summary"></div>
+    <!-- 目標進捗バー（JS で動的生成） -->
+    <div id="goal-progress"></div>
+
     <div class="card">
         <div class="card-title">📈 体重推移グラフ（直近30件）</div>
-        <div class="chart-wrap"><div class="weight-chart" id="weight-chart"></div></div>
+        <div style="display:flex;gap:10px;font-size:0.68em;color:#64748b;margin-bottom:6px;align-items:center;">
+            <span><span style="display:inline-block;width:10px;height:10px;background:#22c55e;border-radius:2px;margin-right:2px;"></span>減少</span>
+            <span><span style="display:inline-block;width:10px;height:10px;background:#ef4444;border-radius:2px;margin-right:2px;"></span>増加</span>
+            <span><span style="display:inline-block;width:10px;height:2px;background:rgba(234,88,12,0.6);border-top:2px dashed rgba(234,88,12,0.6);margin-right:2px;"></span>平均</span>
+        </div>
+        <div class="chart-wrap"><div class="weight-chart" id="weight-chart" style="position:relative;"></div></div>
         <div id="chart-legend" style="display:flex;justify-content:space-between;font-size:0.72em;color:#94a3b8;margin-top:4px;"></div>
     </div>
 
@@ -398,7 +410,8 @@ function updateCalc() {
             <div class="result-box orange"><div class="val">${diff >= 0 ? '+' : ''}${diff}kg</div><div class="lbl">標準体重との差</div></div>
             <div class="result-box blue"><div class="val">${idealWeight}kg</div><div class="lbl">理想体重（BMI21）</div></div>
             <div class="result-box ${bodyFat > (gender==='male' ? 25 : 35) ? 'red' : 'green'}"><div class="val">${bodyFat}%</div><div class="lbl">体脂肪率（推定）</div></div>
-        </div>`;
+        </div>
+        <button onclick="goToRecord(${w})" style="width:100%;background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;border:none;border-radius:10px;padding:12px;font-size:0.9rem;font-weight:700;cursor:pointer;margin-bottom:14px;">📝 今日の体重 ${w}kg を記録する →</button>`;
 
     // 目標体重
     const goalWeight = Math.round(hm * hm * goalBmi * 10) / 10;
@@ -421,6 +434,8 @@ function updateCalc() {
 }
 
 // ===== 体重記録 =====
+const GOAL_KEY = 'bmi_goal_v1';
+
 function getRecords() {
     try { return JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); } catch(e) { return []; }
 }
@@ -432,9 +447,15 @@ function saveRecord() {
     const date = document.getElementById('rec-date').value;
     const weight = parseFloat(document.getElementById('rec-weight').value);
     const memo = document.getElementById('rec-memo').value.trim();
+    const goalInput = parseFloat(document.getElementById('rec-goal').value);
 
     if (!date) { showError('日付を入力してください'); return; }
     if (!weight || weight < 30 || weight > 200) { showError('体重を正しく入力してください（30〜200kg）'); return; }
+
+    // 目標体重が入力されていれば保存
+    if (goalInput && goalInput >= 30 && goalInput <= 200) {
+        try { localStorage.setItem(GOAL_KEY, JSON.stringify(goalInput)); } catch(e) {}
+    }
 
     const records = getRecords();
     const existing = records.findIndex(r => r.date === date);
@@ -446,8 +467,9 @@ function saveRecord() {
     }
     records.sort((a, b) => a.date.localeCompare(b.date));
     saveRecordData(records);
-    document.getElementById('rec-weight').value = '';
     document.getElementById('rec-memo').value = '';
+    // 最新体重を入力欄に残す（次回入力の参考値として）
+    document.getElementById('rec-weight').value = weight;
     renderRecords();
     showSuccess(`✅ 記録しました：${date} ${weight}kg`);
 }
@@ -460,34 +482,110 @@ function renderRecords() {
     const legend = document.getElementById('chart-legend');
 
     if (records.length === 0) {
-        list.innerHTML = ''; empty.style.display = 'block'; chart.innerHTML = ''; return;
+        list.innerHTML = ''; empty.style.display = 'block'; chart.innerHTML = '';
+        legend.innerHTML = '';
+        document.getElementById('stats-summary').innerHTML = '';
+        document.getElementById('goal-progress').innerHTML = '';
+        return;
     }
     empty.style.display = 'none';
-
-    // グラフ
-    const recent = records.slice(-30);
-    const minW = Math.min(...recent.map(r => r.weight)) - 1;
-    const maxW = Math.max(...recent.map(r => r.weight)) + 1;
-    const range = Math.max(maxW - minW, 2);
-    chart.innerHTML = recent.map(r => {
-        const h = Math.round(((r.weight - minW) / range) * 110) + 10;
-        return `<div class="w-col">
-            <div class="w-bar" style="height:${h}px;" title="${r.date}: ${r.weight}kg"></div>
-            <div class="w-lbl">${r.date.slice(5)}</div>
-        </div>`;
-    }).join('');
-    if (recent.length >= 2) {
-        const first = recent[0], last = recent[recent.length-1];
-        const diff = (last.weight - first.weight).toFixed(1);
-        legend.innerHTML = `<span>${first.date}:${first.weight}kg</span><span style="color:${parseFloat(diff)<0?'#16a34a':'#dc2626'};font-weight:700;">${parseFloat(diff)>=0?'+':''}${diff}kg</span><span>${last.date}:${last.weight}kg</span>`;
-    }
 
     // 身長を保存済みプロフィールから取得してBMI計算
     let savedH = 170;
     try { const p = JSON.parse(localStorage.getItem(PROFILE_KEY) || '{}'); if (p.h) savedH = p.h; } catch(e) {}
     const hm = savedH / 100;
 
-    // リスト（新しい順）
+    // --- 統計サマリー ---
+    const weights = records.map(r => r.weight);
+    const avgW = (weights.reduce((a,b)=>a+b,0)/weights.length).toFixed(1);
+    const minW_stat = Math.min(...weights).toFixed(1);
+    const maxW_stat = Math.max(...weights).toFixed(1);
+    const totalDiff = (records[records.length-1].weight - records[0].weight).toFixed(1);
+    const diffColor = parseFloat(totalDiff) < 0 ? '#16a34a' : parseFloat(totalDiff) > 0 ? '#dc2626' : '#64748b';
+    document.getElementById('stats-summary').innerHTML = `
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:14px;">
+            <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:10px;text-align:center;">
+                <div style="font-size:1.1rem;font-weight:800;color:#ea580c;">${avgW}<span style="font-size:0.65em;">kg</span></div>
+                <div style="font-size:0.65em;color:#64748b;margin-top:2px;">平均体重</div>
+            </div>
+            <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:10px;text-align:center;">
+                <div style="font-size:1.1rem;font-weight:800;color:#16a34a;">${minW_stat}<span style="font-size:0.65em;">kg</span></div>
+                <div style="font-size:0.65em;color:#64748b;margin-top:2px;">最低体重</div>
+            </div>
+            <div style="background:#fff1f2;border:1px solid #fca5a5;border-radius:10px;padding:10px;text-align:center;">
+                <div style="font-size:1.1rem;font-weight:800;color:#dc2626;">${maxW_stat}<span style="font-size:0.65em;">kg</span></div>
+                <div style="font-size:0.65em;color:#64748b;margin-top:2px;">最高体重</div>
+            </div>
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px;text-align:center;">
+                <div style="font-size:1.1rem;font-weight:800;color:${diffColor};">${parseFloat(totalDiff)>=0?'+':''}${totalDiff}<span style="font-size:0.65em;">kg</span></div>
+                <div style="font-size:0.65em;color:#64748b;margin-top:2px;">開始〜現在</div>
+            </div>
+        </div>`;
+
+    // --- 目標体重進捗バー ---
+    const savedGoal = (() => { try { return JSON.parse(localStorage.getItem(GOAL_KEY)); } catch(e) { return null; } })();
+    const gpEl = document.getElementById('goal-progress');
+    if (savedGoal && savedGoal > 0 && records.length > 0) {
+        const startW = records[0].weight;
+        const currentW = records[records.length-1].weight;
+        const goalW = savedGoal;
+        const totalNeeded = startW - goalW;
+        const done = startW - currentW;
+        const pct = totalNeeded > 0 ? Math.min(100, Math.max(0, Math.round(done / totalNeeded * 100))) : (currentW <= goalW ? 100 : 0);
+        const remaining = (currentW - goalW).toFixed(1);
+        const barColor = pct >= 100 ? '#16a34a' : '#ea580c';
+        gpEl.innerHTML = `
+            <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:12px;margin-bottom:14px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                    <span style="font-size:0.82em;font-weight:700;color:#ea580c;">🎯 目標: ${goalW}kg</span>
+                    <span style="font-size:0.82em;color:#64748b;">${pct>=100?'🎉 達成！':('あと'+remaining+'kg（'+pct+'%）')}</span>
+                </div>
+                <div style="background:#fed7aa;border-radius:6px;height:10px;overflow:hidden;">
+                    <div style="background:${barColor};height:100%;width:${pct}%;border-radius:6px;transition:width 0.5s;"></div>
+                </div>
+            </div>`;
+    } else {
+        gpEl.innerHTML = '';
+    }
+
+    // --- グラフ（色分け＋平均ライン） ---
+    const recent = records.slice(-30);
+    const minW = Math.min(...recent.map(r => r.weight)) - 1;
+    const maxW = Math.max(...recent.map(r => r.weight)) + 1;
+    const rangeW = Math.max(maxW - minW, 2);
+    const avgLine = (weights.reduce((a,b)=>a+b,0)/weights.length);
+    const avgPct = Math.round(((avgLine - minW) / rangeW) * 110) + 10;
+
+    const chartHtml = recent.map((r, i) => {
+        const h = Math.round(((r.weight - minW) / rangeW) * 110) + 10;
+        const prev = recent[i-1];
+        const barColor = !prev ? 'linear-gradient(180deg,#ea580c,#f97316)'
+            : r.weight < prev.weight ? 'linear-gradient(180deg,#16a34a,#22c55e)'
+            : r.weight > prev.weight ? 'linear-gradient(180deg,#dc2626,#ef4444)'
+            : 'linear-gradient(180deg,#94a3b8,#cbd5e1)';
+        return `<div class="w-col">
+            <div class="w-bar" style="height:${h}px;background:${barColor};" title="${r.date}: ${r.weight}kg"></div>
+            <div class="w-lbl">${r.date.slice(5)}</div>
+        </div>`;
+    }).join('');
+
+    chart.style.position = 'relative';
+    chart.innerHTML = chartHtml;
+    // 平均ラインを絶対配置で追加
+    if (recent.length >= 3) {
+        const avgLineEl = document.createElement('div');
+        avgLineEl.style.cssText = `position:absolute;bottom:${avgPct}px;left:0;right:0;height:2px;background:rgba(234,88,12,0.5);border-top:2px dashed rgba(234,88,12,0.6);pointer-events:none;`;
+        avgLineEl.title = `平均: ${avgLine.toFixed(1)}kg`;
+        chart.appendChild(avgLineEl);
+    }
+
+    if (recent.length >= 2) {
+        const first = recent[0], last = recent[recent.length-1];
+        const diff = (last.weight - first.weight).toFixed(1);
+        legend.innerHTML = `<span>${first.date}:${first.weight}kg</span><span style="color:${parseFloat(diff)<0?'#16a34a':'#dc2626'};font-weight:700;">${parseFloat(diff)>=0?'+':''}${diff}kg</span><span>${last.date}:${last.weight}kg</span>`;
+    }
+
+    // --- リスト（新しい順、個別削除ボタン付き） ---
     const sorted = [...records].reverse();
     list.innerHTML = sorted.map((r, i) => {
         const next = sorted[i+1];
@@ -498,13 +596,26 @@ function renderRecords() {
         const bmiRange = getBmiRange(parseFloat(bmiVal));
         const bmiColor = bmiRange.color;
         return `<div class="record-item">
-            <div><span style="font-weight:600;">${r.date}</span> ${r.memo ? `<span style="color:#94a3b8;font-size:0.85em;">${r.memo}</span>` : ''}</div>
-            <div style="text-align:right;display:flex;align-items:center;gap:6px;">
+            <div style="flex:1;min-width:0;">
+                <span style="font-weight:600;">${r.date}</span> ${r.memo ? `<span style="color:#94a3b8;font-size:0.85em;">${r.memo}</span>` : ''}
+            </div>
+            <div style="text-align:right;display:flex;align-items:center;gap:5px;flex-shrink:0;">
                 <span style="font-size:0.72em;font-weight:700;color:${bmiColor};background:${bmiColor}20;padding:2px 5px;border-radius:4px;">BMI ${bmiVal}</span>
                 <span style="font-weight:700;font-size:1.05em;">${r.weight}kg</span>${diffStr}
+                <button onclick="deleteRecord('${r.date}')" style="background:none;border:none;cursor:pointer;color:#94a3b8;font-size:1em;padding:2px 4px;line-height:1;min-height:28px;border-radius:4px;" aria-label="${r.date}の記録を削除" title="削除">🗑</button>
             </div>
         </div>`;
     }).join('');
+}
+
+function deleteRecord(date) {
+    const records = getRecords();
+    const idx = records.findIndex(r => r.date === date);
+    if (idx < 0) return;
+    records.splice(idx, 1);
+    saveRecordData(records);
+    renderRecords();
+    showInfo(`${date} の記録を削除しました`);
 }
 
 function clearAllRecords() {
@@ -517,10 +628,14 @@ function clearAllRecords() {
 function exportCSV() {
     const records = getRecords();
     if (records.length === 0) { showError('エクスポートするデータがありません'); return; }
-    // BOM付きCSV（Excelで文字化けしない）
-    let csv = '﻿日付,体重(kg),メモ\n';
+    let savedH = 170;
+    try { const p = JSON.parse(localStorage.getItem(PROFILE_KEY) || '{}'); if (p.h) savedH = p.h; } catch(e) {}
+    const hm = savedH / 100;
+    // BOM付きCSV（Excelで文字化けしない）、BMI列追加
+    let csv = '﻿日付,体重(kg),BMI,メモ\n';
     records.forEach(r => {
-        csv += `${r.date},${r.weight},"${(r.memo || '').replace(/"/g, '""')}"\n`;
+        const bmi = (r.weight / (hm * hm)).toFixed(1);
+        csv += `${r.date},${r.weight},${bmi},"${(r.memo || '').replace(/"/g, '""')}"\n`;
     });
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -588,11 +703,31 @@ function renderAdvice(bmi, range, gender, age) {
             ${a.items.map(item => `<div class="advice-item"><span>✓</span><div>${item}</div></div>`).join('')}
         </div>
         <div class="card">
-            <div class="card-title">🏃 1日の消費カロリー目安</div>
+            <div class="card-title">🏃 1日のTDEE（消費カロリー）目安</div>
             <div style="font-size:0.82em;color:#475569;">
-                <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #fef3c7;"><span>座り仕事中心</span><span style="font-weight:700;">${Math.round(parseInt(document.getElementById('weight')?.value||65)*25)}〜${Math.round(parseInt(document.getElementById('weight')?.value||65)*28)} kcal</span></div>
-                <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #fef3c7;"><span>適度に動く</span><span style="font-weight:700;">${Math.round(parseInt(document.getElementById('weight')?.value||65)*28)}〜${Math.round(parseInt(document.getElementById('weight')?.value||65)*32)} kcal</span></div>
-                <div style="display:flex;justify-content:space-between;padding:5px 0;"><span>よく動く・運動習慣あり</span><span style="font-weight:700;">${Math.round(parseInt(document.getElementById('weight')?.value||65)*32)}〜${Math.round(parseInt(document.getElementById('weight')?.value||65)*37)} kcal</span></div>
+                ${(() => {
+                    const w = parseFloat(document.getElementById('weight')?.value || 65);
+                    const h = parseInt(document.getElementById('height')?.value || 170);
+                    const ageNum = { teens: 17, '20s': 28, '40s': 48, '60s': 68 }[document.getElementById('age')?.value || '20s'] || 28;
+                    const isMale = gender === 'male';
+                    // Harris-Benedict式によるBMR計算
+                    const bmr = isMale
+                        ? Math.round(88.362 + (13.397 * w) + (4.799 * h) - (5.677 * ageNum))
+                        : Math.round(447.593 + (9.247 * w) + (3.098 * h) - (4.330 * ageNum));
+                    const rows = [
+                        { label: '座り仕事中心（運動なし）', mult: 1.2 },
+                        { label: '軽い運動（週1〜3回）', mult: 1.375 },
+                        { label: '適度な運動（週3〜5回）', mult: 1.55 },
+                        { label: 'よく動く・ハードな運動', mult: 1.725 },
+                    ];
+                    const rowHtml = rows.map((row, i) =>
+                        `<div style="display:flex;justify-content:space-between;padding:5px 0;${i<rows.length-1?'border-bottom:1px solid #fef3c7;':''}">
+                            <span>${row.label}</span>
+                            <span style="font-weight:700;">${Math.round(bmr * row.mult)} kcal</span>
+                        </div>`
+                    ).join('');
+                    return `<div style="font-size:0.75em;color:#94a3b8;margin-bottom:6px;">基礎代謝（BMR）: ${bmr} kcal（Harris-Benedict式）</div>` + rowHtml;
+                })()}
             </div>
         </div>`;
 }
@@ -603,7 +738,26 @@ function switchTab(name, el) {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     el.classList.add('active');
     document.getElementById('panel-'+name).classList.add('active');
-    if (name === 'record') renderRecords();
+    if (name === 'record') {
+        renderRecords();
+        // 前回体重を自動入力（未入力の場合のみ）
+        const recWeight = document.getElementById('rec-weight');
+        if (!recWeight.value) {
+            const records = getRecords();
+            if (records.length > 0) {
+                recWeight.value = records[records.length-1].weight;
+            }
+        }
+    }
+}
+
+// BMI計算から記録タブへのCTAボタン
+function goToRecord(weight) {
+    const tab = document.querySelector('.tab:nth-child(2)');
+    switchTab('record', tab);
+    document.getElementById('rec-weight').value = weight;
+    document.getElementById('rec-weight').focus();
+    showInfo('体重が入力されました。日付を確認して記録してください。');
 }
 
 // アフィリエイトトラッキング
@@ -627,13 +781,23 @@ document.addEventListener('DOMContentLoaded', function(){
         if (prof.gender) { gender = prof.gender; document.getElementById('btn-'+prof.gender)?.classList.add('selected'); document.getElementById('btn-'+(prof.gender==='male'?'female':'male'))?.classList.remove('selected'); }
         if (prof.age) document.getElementById('age').value = prof.age;
     } catch(e) {}
+    // 目標体重を入力欄に復元
+    try {
+        const savedGoal = JSON.parse(localStorage.getItem(GOAL_KEY));
+        if (savedGoal) document.getElementById('rec-goal').value = savedGoal;
+    } catch(e) {}
+    // 前回体重を入力欄に自動入力
+    try {
+        const recs = getRecords();
+        if (recs.length > 0) document.getElementById('rec-weight').value = recs[recs.length-1].weight;
+    } catch(e) {}
     updateCalc();
 });
 </script>
 
 <div style="margin:20px auto;max-width:800px;padding:16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;"><p style="font-size:0.85rem;font-weight:bold;color:#166534;margin-bottom:10px;">💪 健康管理・ダイエットに役立つ本</p><div style="display:flex;flex-wrap:wrap;gap:10px;"><a class="js-track-affiliate" href="https://www.amazon.co.jp/s?k=ダイエット+食事管理+栄養+本&tag=appadaycrea0f-22" target="_blank" rel="noopener" style="background:#16a34a;color:#fff;padding:8px 14px;border-radius:8px;font-size:0.82em;font-weight:bold;text-decoration:none;" data-platform="Amazon" data-item-name="ダイエット食事管理栄養" data-link-type="affiliate_link">📚 ダイエット・栄養管理の本 →</a><a class="js-track-affiliate" href="https://www.amazon.co.jp/s?k=体組成計+体重計+スマート+おすすめ&tag=appadaycrea0f-22" target="_blank" rel="noopener" style="background:#15803d;color:#fff;padding:8px 14px;border-radius:8px;font-size:0.82em;font-weight:bold;text-decoration:none;" data-platform="Amazon" data-item-name="体組成計体重計スマート" data-link-type="affiliate_link">⚖️ スマート体組成計をAmazonで見る →</a></div></div><section style="margin:20px auto;max-width:800px;padding:20px;background:#f0fdf4;border-radius:12px;"><h2 style="color:#166534;font-size:1.1rem;margin-bottom:12px;">💪 BMI・体重管理の基礎知識</h2><table style="width:100%;border-collapse:collapse;font-size:0.85rem;"><tr style="background:#dcfce7;"><th style="padding:6px;border:1px solid #bbf7d0;">BMI値</th><th>判定</th><th>リスク</th></tr><tr><td style="padding:5px;border:1px solid #dcfce7;">18.5未満</td><td>低体重（痩せ）</td><td>栄養不足・骨粗しょう症リスク</td></tr><tr style="background:#f0fdf4;"><td style="padding:5px;border:1px solid #dcfce7;">18.5〜25未満</td><td>普通体重</td><td>最も健康的な範囲</td></tr><tr><td style="padding:5px;border:1px solid #dcfce7;">25〜30未満</td><td>肥満度1</td><td>生活習慣病リスク上昇</td></tr><tr style="background:#f0fdf4;"><td style="padding:5px;border:1px solid #dcfce7;">30以上</td><td>肥満度2以上</td><td>高リスク・医師相談推奨</td></tr></table><h3 style="color:#166534;font-size:0.95rem;margin-top:14px;">適切な体重管理の方法</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;"><div style="background:#dcfce7;padding:12px;border-radius:8px;font-size:0.85rem;"><strong>食事管理</strong><br/>PFCバランスを意識。タンパク質多め・糖質控えめ・良質な脂質を摂取</div><div style="background:#dcfce7;padding:12px;border-radius:8px;font-size:0.85rem;"><strong>運動習慣</strong><br/>有酸素運動（週3回30分以上）＋筋トレで基礎代謝を上げる</div></div><p style="margin-top:12px;font-size:0.85rem;"><strong>Q. 理想的なダイエット速度は？</strong><br/>月に体重の1〜2%程度が健康的なペース。急激な減量は筋肉量の低下を招きます。</p></section>
 <div id="page-loader-bm" class="loading" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.95);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;">
-  <div class="spinner" style="width:40px;height:40px;border:4px solid #ede9fe;border-top-color:#7c3aed;border-radius:50%;animation:spin-bm 0.8s linear infinite;"></div>
+  <div class="spinner" style="width:40px;height:40px;border:4px solid #fed7aa;border-top-color:#ea580c;border-radius:50%;animation:spin-bm 0.8s linear infinite;"></div>
   <p class="loading-text" style="margin-top:12px;font-size:0.85rem;color:#6b7280;">読み込み中...</p>
 </div>
 <div class="skeleton" style="display:none;height:3px;background:linear-gradient(90deg,#e5e7eb 25%,#f3f4f6 50%,#e5e7eb 75%);background-size:200% 100%;"></div>
@@ -708,7 +872,7 @@ document.addEventListener("DOMContentLoaded",function(){try{var l=document.getEl
 .toast-info{background:#7c3aed;}
 .loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,0.85);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9998;opacity:0;pointer-events:none;transition:opacity 0.2s;}
 .loading-overlay.active{opacity:1;pointer-events:all;}
-.loading-spinner{width:40px;height:40px;border:3px solid #ede9fe;border-top-color:#7c3aed;border-radius:50%;animation:spin 0.7s linear infinite;}
+.loading-spinner{width:40px;height:40px;border:3px solid #fed7aa;border-top-color:#ea580c;border-radius:50%;animation:spin 0.7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 </style>
 <div class="toast-container" id="toastContainer"></div>
