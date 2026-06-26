@@ -54,49 +54,50 @@ body{font-family:'Hiragino Sans','Meiryo',sans-serif;color:var(--text-dark);line
 @media(max-width:768px){.lp-navlinks{display:none;}.lp-nav-inner{justify-content:space-between;}}
 
 /* ===== HERO ===== */
-.hero{padding:60px 24px 0;background:var(--white);}
-.hero-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;}
+.hero{padding:64px 24px 48px;background:linear-gradient(160deg,#f0fdf4 0%,#ecfdf5 30%,#ffffff 70%);}
+.hero-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
 .hero-badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
 .hero-badge{background:var(--green-light);color:var(--green-dark);padding:4px 12px;border-radius:20px;font-size:0.78rem;font-weight:700;border:1px solid #a7f3d0;}
-.hero-h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;line-height:1.25;color:var(--text-dark);margin-bottom:16px;}
-.hero-h1 span{color:var(--green);}
-.hero-sub{font-size:0.95rem;color:var(--text-mid);margin-bottom:28px;line-height:1.7;}
-.hero-cta{display:inline-flex;align-items:center;gap:8px;background:var(--green);color:#fff;padding:16px 32px;border-radius:12px;font-size:1rem;font-weight:700;text-decoration:none;transition:background .15s;box-shadow:0 4px 14px rgba(16,185,129,.35);}
+.hero-h1{font-size:clamp(2.2rem,4.5vw,3.4rem);font-weight:900;line-height:1.2;color:var(--text-dark);margin-bottom:18px;letter-spacing:-0.02em;}
+.hero-h1 span{color:var(--green);display:block;}
+.hero-sub{font-size:0.98rem;color:var(--text-mid);margin-bottom:32px;line-height:1.8;}
+.hero-cta{display:inline-flex;align-items:center;gap:8px;background:var(--green);color:#fff;padding:18px 40px;border-radius:12px;font-size:1.05rem;font-weight:700;text-decoration:none;transition:background .15s;box-shadow:0 6px 20px rgba(16,185,129,.4);}
 .hero-cta:hover{background:var(--green-dark);}
 .hero-cta-arrow{font-size:1.1rem;}
-.hero-right{position:relative;}
-.hero-widget{background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,.12);padding:20px;margin-bottom:16px;}
+.hero-right{position:relative;display:flex;flex-direction:column;gap:16px;}
+.hero-widget{background:#fff;border-radius:16px;box-shadow:0 8px 32px rgba(16,185,129,.18),0 2px 8px rgba(0,0,0,.08);padding:22px 24px;}
 .hero-widget-title{font-size:0.78rem;color:var(--text-light);margin-bottom:8px;font-weight:600;}
 .hero-bmi-row{display:flex;align-items:center;gap:16px;margin-bottom:12px;}
-.hero-bmi-num{font-size:2.8rem;font-weight:900;color:var(--green);}
-.hero-bmi-badge{background:var(--green-light);color:var(--green-dark);padding:4px 10px;border-radius:8px;font-size:0.82rem;font-weight:700;}
-.hero-bmi-bar{height:12px;border-radius:6px;background:linear-gradient(90deg,#3b82f6 0%,#10B981 30%,#eab308 55%,#ef4444 75%,#9333ea 100%);margin-bottom:6px;position:relative;}
-.hero-bmi-ptr{position:absolute;top:-4px;left:38%;width:4px;height:20px;background:#1e293b;border-radius:2px;transform:translateX(-50%);}
+.hero-bmi-num{font-size:3.4rem;font-weight:900;color:var(--green);line-height:1;}
+.hero-bmi-badge{background:var(--green);color:#fff;padding:6px 14px;border-radius:8px;font-size:0.86rem;font-weight:700;}
+.hero-bmi-bar{height:14px;border-radius:7px;background:linear-gradient(90deg,#3b82f6 0%,#10B981 30%,#eab308 55%,#ef4444 75%,#9333ea 100%);margin-bottom:6px;position:relative;}
+.hero-bmi-ptr{position:absolute;top:-4px;left:38%;width:4px;height:22px;background:#1e293b;border-radius:2px;transform:translateX(-50%);}
 .hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
-.hero-stat{text-align:center;background:var(--bg-gray);border-radius:8px;padding:8px 4px;}
-.hero-stat-val{font-size:1rem;font-weight:800;color:var(--text-dark);}
+.hero-stat{text-align:center;background:var(--green-light);border-radius:8px;padding:10px 4px;border:1px solid #a7f3d0;}
+.hero-stat-val{font-size:1.1rem;font-weight:800;color:var(--text-dark);}
 .hero-stat-val.green{color:var(--green);}
 .hero-stat-val.amber{color:var(--amber-dark);}
-.hero-stat-lbl{font-size:0.65rem;color:var(--text-light);margin-top:2px;}
-.hero-photo{width:100%;height:260px;object-fit:cover;border-radius:16px;display:block;}
+.hero-stat-lbl{font-size:0.65rem;color:var(--text-mid);margin-top:2px;font-weight:600;}
+.hero-photo{width:100%;height:340px;object-fit:cover;border-radius:16px;display:block;box-shadow:0 8px 24px rgba(0,0,0,.12);}
 @media(max-width:768px){
   .hero-inner{grid-template-columns:1fr;gap:32px;}
-  .hero{padding:40px 16px 0;}
-  .hero-photo{height:220px;}
+  .hero{padding:48px 16px 40px;}
+  .hero-h1{font-size:clamp(2rem,6vw,2.8rem);}
+  .hero-photo{height:260px;}
 }
 
 /* ===== BENEFITS BAR ===== */
-.benefits-bar{background:var(--green-light);padding:0;margin-top:0;}
+.benefits-bar{background:var(--green);padding:0;margin-top:0;}
 .benefits-bar-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);}
-.benefit-item{padding:20px 16px;text-align:center;border-right:1px solid #a7f3d0;}
+.benefit-item{padding:24px 16px;text-align:center;border-right:1px solid rgba(255,255,255,.25);}
 .benefit-item:last-child{border:none;}
-.benefit-icon{width:40px;height:40px;margin:0 auto 8px;}
-.benefit-icon img{width:40px;height:40px;object-fit:contain;}
-.benefit-title{font-size:0.85rem;font-weight:700;color:var(--green-dark);margin-bottom:4px;}
-.benefit-sub{font-size:0.72rem;color:var(--text-mid);}
+.benefit-icon{width:48px;height:48px;margin:0 auto 10px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.benefit-icon img{width:28px;height:28px;object-fit:contain;filter:brightness(10);}
+.benefit-title{font-size:0.88rem;font-weight:800;color:#fff;margin-bottom:4px;}
+.benefit-sub{font-size:0.72rem;color:rgba(255,255,255,.8);}
 @media(max-width:768px){
   .benefits-bar-inner{grid-template-columns:repeat(2,1fr);}
-  .benefit-item{border-bottom:1px solid #a7f3d0;}
+  .benefit-item{border-bottom:1px solid rgba(255,255,255,.2);}
   .benefit-item:nth-child(2){border-right:none;}
   .benefit-item:nth-child(3){border-bottom:none;}
   .benefit-item:last-child{border:none;}
@@ -114,14 +115,25 @@ body{font-family:'Hiragino Sans','Meiryo',sans-serif;color:var(--text-dark);line
 
 /* ===== FEATURES 4 CARDS ===== */
 .features-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;}
-.feature-card{background:#fff;border-radius:14px;padding:24px 20px;border:1px solid var(--border);transition:box-shadow .2s;}
-.feature-card:hover{box-shadow:0 4px 20px rgba(0,0,0,.08);}
-.feature-icon{width:52px;height:52px;background:var(--green-light);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;}
-.feature-icon img{width:32px;height:32px;object-fit:contain;}
-.feature-title{font-size:0.95rem;font-weight:700;color:var(--text-dark);margin-bottom:8px;}
-.feature-sub{font-size:0.82rem;color:var(--text-mid);line-height:1.65;}
+.feature-card{background:#fff;border-radius:16px;padding:32px 24px;border:1px solid var(--border);transition:box-shadow .2s;text-align:center;}
+.feature-card:hover{box-shadow:0 8px 28px rgba(16,185,129,.14);transform:translateY(-2px);}
+.feature-icon{width:76px;height:76px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;}
+.feature-icon img{width:44px;height:44px;object-fit:contain;filter:brightness(10);}
+.feature-title{font-size:1rem;font-weight:800;color:var(--text-dark);margin-bottom:10px;}
+.feature-sub{font-size:0.83rem;color:var(--text-mid);line-height:1.7;}
 @media(max-width:900px){.features-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:480px){.features-grid{grid-template-columns:1fr;}}
+
+/* ===== SUB FEATURES 4 CARDS ===== */
+.sub-features-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:32px;}
+.sub-feature-card{background:var(--green-light);border-radius:14px;padding:22px 18px;border:1px solid #a7f3d0;border-left:4px solid var(--green);}
+.sub-feature-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.sub-feature-ico{width:36px;height:36px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 6px rgba(16,185,129,.2);}
+.sub-feature-ico img{width:22px;height:22px;object-fit:contain;}
+.sub-feature-title{font-size:0.88rem;font-weight:800;color:var(--green-darker);}
+.sub-feature-sub{font-size:0.78rem;color:var(--text-mid);line-height:1.65;}
+@media(max-width:900px){.sub-features-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:480px){.sub-features-grid{grid-template-columns:1fr;}}
 
 /* ===== MORE FEATURES GRID ===== */
 .more-features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
@@ -216,10 +228,10 @@ body{font-family:'Hiragino Sans','Meiryo',sans-serif;color:var(--text-dark);line
 
 /* stats row */
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:48px;}
-.stat-box{text-align:center;padding:20px 12px;background:#fff;border-radius:12px;border:1px solid var(--border);}
-.stat-num{font-size:1.8rem;font-weight:900;color:var(--green);}
-.stat-unit{font-size:0.85rem;font-weight:600;color:var(--text-mid);}
-.stat-label{font-size:0.75rem;color:var(--text-light);margin-top:4px;}
+.stat-box{text-align:center;padding:28px 12px;background:#fff;border-radius:16px;border:1px solid var(--border);box-shadow:0 2px 12px rgba(16,185,129,.08);}
+.stat-num{font-size:2.4rem;font-weight:900;color:var(--green);line-height:1;}
+.stat-unit{font-size:1rem;font-weight:700;color:var(--green-dark);}
+.stat-label{font-size:0.78rem;color:var(--text-mid);margin-top:6px;font-weight:500;}
 @media(max-width:600px){.stats-row{grid-template-columns:repeat(2,1fr);}}
 </style>
 </head>
@@ -366,6 +378,38 @@ body{font-family:'Hiragino Sans','Meiryo',sans-serif;color:var(--text-dark);line
         <div class="feature-icon"><img src="../assets/icons/split/01-07.png" alt="目標体重サポート"></div>
         <div class="feature-title">目標体重までサポート</div>
         <div class="feature-sub">目標BMI設定で達成予測期間を表示。BMIカテゴリー別パーソナライズアドバイスも充実。</div>
+      </div>
+    </div>
+
+    <!-- Sub features row -->
+    <div class="sub-features-grid">
+      <div class="sub-feature-card">
+        <div class="sub-feature-head">
+          <div class="sub-feature-ico"><img src="../assets/icons/split/03-07.png" alt="SNS共有"></div>
+          <div class="sub-feature-title">SNS共有・モチベUP</div>
+        </div>
+        <div class="sub-feature-sub">達成記録をTwitter・LINEで共有。友人と競い合いながら継続率アップ。SNSボタン一発で投稿できます。</div>
+      </div>
+      <div class="sub-feature-card">
+        <div class="sub-feature-head">
+          <div class="sub-feature-ico"><img src="../assets/icons/split/02-01.png" alt="体型計測値"></div>
+          <div class="sub-feature-title">体型計測値を記録</div>
+        </div>
+        <div class="sub-feature-sub">ウエスト・腹囲・胸囲など体型の数値を記録。体重だけでは見えない変化を可視化できます。</div>
+      </div>
+      <div class="sub-feature-card">
+        <div class="sub-feature-head">
+          <div class="sub-feature-ico"><img src="../assets/icons/split/01-05.png" alt="カレンダービュー"></div>
+          <div class="sub-feature-title">カレンダービュー</div>
+        </div>
+        <div class="sub-feature-sub">記録日をカレンダーで一覧確認。グラフと合わせて長期トレンドを直感的に把握できます。</div>
+      </div>
+      <div class="sub-feature-card">
+        <div class="sub-feature-head">
+          <div class="sub-feature-ico"><img src="../assets/icons/split/02-03.png" alt="食事アドバイス"></div>
+          <div class="sub-feature-title">BMI別食事アドバイス</div>
+        </div>
+        <div class="sub-feature-sub">あなたのBMIに合った推奨カロリー・栄養バランスを自動表示。健康的な食事計画をサポート。</div>
       </div>
     </div>
   </div>
