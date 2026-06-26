@@ -54,7 +54,7 @@ body{font-family:'Hiragino Sans','Meiryo',sans-serif;color:var(--text-dark);line
 @media(max-width:768px){.lp-navlinks{display:none;}.lp-nav-inner{justify-content:space-between;}}
 
 /* ===== HERO ===== */
-.hero{padding:64px 24px 48px;background:linear-gradient(160deg,#f0fdf4 0%,#ecfdf5 30%,#ffffff 70%);}
+.hero{padding:64px 24px 48px;background:linear-gradient(160deg,#bbf7d0 0%,#d1fae5 25%,#ecfdf5 55%,#ffffff 85%);}
 .hero-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
 .hero-badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
 .hero-badge{background:var(--green-light);color:var(--green-dark);padding:4px 12px;border-radius:20px;font-size:0.78rem;font-weight:700;border:1px solid #a7f3d0;}
@@ -64,7 +64,7 @@ body{font-family:'Hiragino Sans','Meiryo',sans-serif;color:var(--text-dark);line
 .hero-cta{display:inline-flex;align-items:center;gap:8px;background:var(--green);color:#fff;padding:18px 40px;border-radius:12px;font-size:1.05rem;font-weight:700;text-decoration:none;transition:background .15s;box-shadow:0 6px 20px rgba(16,185,129,.4);}
 .hero-cta:hover{background:var(--green-dark);}
 .hero-cta-arrow{font-size:1.1rem;}
-.hero-right{position:relative;display:flex;flex-direction:column;gap:16px;}
+.hero-right{position:relative;display:flex;flex-direction:column;gap:16px;min-height:580px;}
 .hero-widget{background:#fff;border-radius:16px;box-shadow:0 8px 32px rgba(16,185,129,.18),0 2px 8px rgba(0,0,0,.08);padding:22px 24px;}
 .hero-widget-title{font-size:0.78rem;color:var(--text-light);margin-bottom:8px;font-weight:600;}
 .hero-bmi-row{display:flex;align-items:center;gap:16px;margin-bottom:12px;}
@@ -78,12 +78,12 @@ body{font-family:'Hiragino Sans','Meiryo',sans-serif;color:var(--text-dark);line
 .hero-stat-val.green{color:var(--green);}
 .hero-stat-val.amber{color:var(--amber-dark);}
 .hero-stat-lbl{font-size:0.65rem;color:var(--text-mid);margin-top:2px;font-weight:600;}
-.hero-photo{width:100%;height:340px;object-fit:cover;border-radius:16px;display:block;box-shadow:0 8px 24px rgba(0,0,0,.12);}
+.hero-photo{width:100%;height:420px;object-fit:cover;border-radius:16px;display:block;box-shadow:0 8px 24px rgba(0,0,0,.12);flex:1;}
 @media(max-width:768px){
   .hero-inner{grid-template-columns:1fr;gap:32px;}
   .hero{padding:48px 16px 40px;}
   .hero-h1{font-size:clamp(2rem,6vw,2.8rem);}
-  .hero-photo{height:260px;}
+  .hero-photo{height:300px;flex:none;}
 }
 
 /* ===== BENEFITS BAR ===== */
@@ -181,6 +181,11 @@ body{font-family:'Hiragino Sans','Meiryo',sans-serif;color:var(--text-dark);line
 .gallery-grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;display:block;}
 @media(max-width:768px){.gallery-grid{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:480px){.gallery-grid{grid-template-columns:repeat(2,1fr);}}
+
+/* ===== SECTION GALLERY DARK ===== */
+.section-gallery-dark{background:var(--green);}
+.section-gallery-dark .section-title{color:#fff;}
+.section-gallery-dark .section-title span{color:#fff;}
 
 /* ===== FAQ ===== */
 .faq-list{max-width:800px;margin:0 auto;display:flex;flex-direction:column;gap:12px;}
@@ -494,7 +499,7 @@ body{font-family:'Hiragino Sans','Meiryo',sans-serif;color:var(--text-dark);line
 </section>
 
 <!-- ===== SCREEN IMAGES ===== -->
-<section class="section section-gray">
+<section class="section section-white">
   <div class="container">
     <h2 class="section-title">画面<span>イメージ</span></h2>
     <p class="section-sub">使いやすいデザインで、毎日の記録が楽しくなります</p>
@@ -528,7 +533,7 @@ body{font-family:'Hiragino Sans','Meiryo',sans-serif;color:var(--text-dark);line
 </section>
 
 <!-- ===== HOW-TO ===== -->
-<section class="section section-white" id="howto">
+<section class="section section-gray" id="howto">
   <div class="container">
     <h2 class="section-title">使い方・かんたん<span>3ステップ</span></h2>
     <p class="section-sub">アプリのインストール不要。ブラウザを開くだけですぐに使えます</p>
@@ -556,7 +561,7 @@ body{font-family:'Hiragino Sans','Meiryo',sans-serif;color:var(--text-dark);line
 </section>
 
 <!-- ===== GALLERY ===== -->
-<section class="section section-green">
+<section class="section section-gallery-dark">
   <div class="container">
     <h2 class="section-title" style="margin-bottom:32px;">みんなの<span>健康管理シーン</span></h2>
     <div class="gallery-grid">
@@ -575,7 +580,7 @@ body{font-family:'Hiragino Sans','Meiryo',sans-serif;color:var(--text-dark);line
 </section>
 
 <!-- ===== COMPARISON TABLE ===== -->
-<section class="section section-white">
+<section class="section section-green">
   <div class="container">
     <h2 class="section-title">他サービスとの<span>比較</span></h2>
     <p class="section-sub">登録不要・無料・ブラウザ完結の強みが際立ちます</p>
@@ -603,7 +608,7 @@ body{font-family:'Hiragino Sans','Meiryo',sans-serif;color:var(--text-dark);line
 </section>
 
 <!-- ===== TRUST ===== -->
-<section class="section section-gray" id="trust">
+<section class="section section-white" id="trust">
   <div class="container">
     <h2 class="section-title">安心して、<span>無料でご利用いただけます</span></h2>
     <p class="section-sub">個人情報保護・セキュリティを徹底したサービス設計</p>
@@ -633,7 +638,7 @@ body{font-family:'Hiragino Sans','Meiryo',sans-serif;color:var(--text-dark);line
 </section>
 
 <!-- ===== FAQ ===== -->
-<section class="section section-white" id="faq">
+<section class="section section-green" id="faq">
   <div class="container">
     <h2 class="section-title"><span>よくある</span>質問</h2>
     <p class="section-sub">気になる疑問にお答えします</p>
